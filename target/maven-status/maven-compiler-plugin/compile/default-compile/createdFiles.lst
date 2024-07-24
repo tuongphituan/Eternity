@@ -1,0 +1,10 @@
+me/tuan/eternity/generator/GeneratorsConfig$Mapper.class
+me/tuan/eternity/generator/GeneratorsListener.class
+me/tuan/eternity/generator/GeneratorsConfig.class
+me/tuan/eternity/generator/Generator.class
+me/tuan/eternity/command/ReloadCommand.class
+me/tuan/eternity/booster/Booster.class
+me/tuan/eternity/Eternity.class
+me/tuan/eternity/config/Config.class
+me/tuan/eternity/booster/BoostersListener.class
+me/tuan/eternity/command/Command.class
