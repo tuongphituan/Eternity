@@ -4,17 +4,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFormEvent;
-import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.Material;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 public class GeneratorsListener implements Listener {
-	private static final Map<Block, Generator> generators = new WeakHashMap<>();
+	private final Map<Block, Generator> generators = new WeakHashMap<>();
 	
 	private final GeneratorsConfig config;
 	
@@ -31,20 +28,15 @@ public class GeneratorsListener implements Listener {
 	
 	@EventHandler
 	public void onBlockForm(BlockFormEvent event) {
-		if (cantForm(event.getNewState().getType())) return;
 		Generator generator = generators.remove(event.getBlock());
-		if (generator != null)
+		if (generator != null && generator.isGeneratorBlock(event.getNewState().getType()))
 			event.getNewState().setType(generator.generate());
-	}
-	
-	private boolean cantForm(Material type) {
-		return type != Material.COBBLESTONE && type != Material.BASALT;
 	}
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Generator generator = config.get().stream()
-			.filter(g -> g.canUse(event.getPlayer()))
+			.filter(g -> g.isDefault() || event.getPlayer().hasPermission(g.permission()))
 			.findFirst()
 			.orElseThrow(IllegalStateException::new);
 		Generator.store(event.getPlayer().getUniqueId(), generator);

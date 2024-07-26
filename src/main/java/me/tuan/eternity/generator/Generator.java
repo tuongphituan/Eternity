@@ -2,65 +2,92 @@ package me.tuan.eternity.generator;
 
 import org.bukkit.Material;
 import java.util.Map;
-import java.util.Iterator;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.SplittableRandom;
 import java.util.UUID;
 import java.util.HashMap;
-import org.bukkit.entity.Player;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Generator {
 	private static final Map<UUID, Generator> generators = new HashMap<>();
 	private static final SplittableRandom random = new SplittableRandom();
 	
-	private Map<Material, Double> blocks;
-	private Set<Entry<Material, Double>> entries;
-	private double totalChance;
-	private String permission;
-	private boolean isDefault;
+	private final List<Material> materials = new ArrayList<>();;
+	private final List<Double> chances = new ArrayList<>();
+	private final List<Integer> alias = new ArrayList<>();
+	
+	private final double totalChance;
+	private final String permission;
+	private final boolean isDefault;
 	
 	public Generator(Map<Material, Double> blocks, String permission, boolean isDefault) {
-		this.blocks = blocks;
-		this.entries = blocks.entrySet();
+		if (blocks.isEmpty()) throw new IllegalStateException();
+		
+		materials.addAll(blocks.keySet());
+		
 		this.totalChance = blocks.values().stream().reduce(0.0, Double::sum);
 		this.permission = permission;
 		this.isDefault = isDefault;
+		
+		compute(blocks);
+	}
+	
+	private void compute(Map<Material, Double> blocks) {
+		List<Integer> small = new ArrayList<>();
+		List<Integer> large = new ArrayList<>();
+		
+		int s = blocks.size();
+		double[] prob = new double[s];
+		double[] aliasProb = new double[s];
+		
+		alias.addAll(Collections.nCopies(s, -1));
+	
+		int i = 0;
+		for (Entry<Material, Double> entry : blocks.entrySet()) {
+			prob[i] = entry.getValue() * s / totalChance;
+			if (prob[i] < 1.0) small.add(i);
+			else large.add(i); i++;
+		}
+		
+		while (!small.isEmpty() && !large.isEmpty()) {
+			int less = small.remove(small.size() - 1);
+			int more = large.remove(large.size() - 1);
+			
+			aliasProb[less] = prob[less];
+			alias.set(less, more);
+			
+			prob[more] = prob[more] + prob[less] - 1.0;
+			if (prob[more] < 1.0) small.add(more);
+			else large.add(more);
+		}
+		
+		while (!small.isEmpty()) aliasProb[small.remove(small.size() - 1)] = 1.0;
+		while (!large.isEmpty()) aliasProb[large.remove(large.size() - 1)] = 1.0;
+
+		for (i = 0; i < s; i++) chances.add(aliasProb[i]);
 	}
 	
 	public Material generate() {
-		if (!blocks.isEmpty()) {
-			double value = random.nextDouble(totalChance);
-			for (Entry<Material, Double> entry : entries)
-				if ((value -= entry.getValue()) < 0) return entry.getKey();
-		}
-		return Material.COBBLESTONE;
+		int column = random.nextInt(materials.size());
+		boolean coinToss = random.nextDouble() < chances.get(column);
+		return materials.get(coinToss ? column : alias.get(column));
 	}
 	
-	public boolean canUse(Player player) {
-		return isDefault || player.hasPermission(permission);
+	public String permission() {
+		return permission;
 	}
 	
-	public void addBlock(Material type, double chance) {
-		Double oldChance = blocks.put(type, chance);
-		if (oldChance != null) totalChance -= oldChance;
-		entries.add(Map.entry(type, chance));
-		totalChance += chance;
-	}
-	
-	public void removeBlock(Material type) {
-		Double chance = blocks.remove(type);
-		if (chance != null) {
-			totalChance -= chance;
-			entries.remove(Map.entry(type, chance));
-		}
+	public boolean isDefault() {
+		return isDefault;
 	}
 	
 	public boolean hasBlock(Material type) {
-		return blocks.containsKey(type) || hasBlock1(type);
+		return materials.contains(type) || isGeneratorBlock(type);
 	}
 	
-	private boolean hasBlock1(Material type) {
+	public boolean isGeneratorBlock(Material type) {
 		return type == Material.COBBLESTONE || type == Material.BASALT;
 	}
 	
