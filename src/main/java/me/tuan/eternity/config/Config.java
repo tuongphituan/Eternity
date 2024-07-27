@@ -15,19 +15,27 @@ public class Config {
 	}
 	
 	public void load() {
-		
+		try {
+			if (Files.notExists(file.getParent()))
+				Files.createDirectories(file.getParent());
+			if (Files.notExists(file)) loadDefault();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public void loadDefaults() throws IOException {
-		if (Files.notExists(file.getParent())) Files.createDirectories(file.getParent());
-		if (Files.notExists(file)) Files.copy(getDefaultAsStream(), file);
+	private void loadDefault() throws IOException {
+		try (InputStream stream = getDefaultAsStream()) {
+			if (stream != null) Files.copy(stream, file);
+			else Files.createFile(file);
+		}
 	}
 	
 	public InputStream getDefaultAsStream() {
 		return getClass().getClassLoader().getResourceAsStream(getName());
 	}
 	
-	public BufferedReader reader() throws IOException {
+	public BufferedReader newReader() throws IOException {
 		return Files.newBufferedReader(file);
 	}
 	

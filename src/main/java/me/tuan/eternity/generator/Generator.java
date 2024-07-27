@@ -18,7 +18,6 @@ public class Generator {
 	private final List<Double> chances = new ArrayList<>();
 	private final List<Integer> alias = new ArrayList<>();
 	
-	private final double totalChance;
 	private final String permission;
 	private final boolean isDefault;
 	
@@ -27,7 +26,6 @@ public class Generator {
 		
 		materials.addAll(blocks.keySet());
 		
-		this.totalChance = blocks.values().stream().reduce(0.0, Double::sum);
 		this.permission = permission;
 		this.isDefault = isDefault;
 		
@@ -44,6 +42,9 @@ public class Generator {
 		
 		alias.addAll(Collections.nCopies(s, -1));
 	
+		double totalChance = 0;
+		for (double chance : blocks.values()) totalChance += chance;
+		
 		int i = 0;
 		for (Entry<Material, Double> entry : blocks.entrySet()) {
 			prob[i] = entry.getValue() * s / totalChance;

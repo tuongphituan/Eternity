@@ -36,7 +36,8 @@ public class GeneratorsListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Generator generator = config.get().stream()
-			.filter(g -> g.isDefault() || event.getPlayer().hasPermission(g.permission()))
+			.filter(g -> g.isDefault() || (g.permission() != null &&
+				event.getPlayer().hasPermission(g.permission())))
 			.findFirst()
 			.orElseThrow(IllegalStateException::new);
 		Generator.store(event.getPlayer().getUniqueId(), generator);
