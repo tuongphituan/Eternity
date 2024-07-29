@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.Stream;
+import java.util.Comparator;
 
 public class Generator implements Comparable<Generator> {
 	private static final List<Generator> holder = new ArrayList<>();
@@ -24,7 +25,7 @@ public class Generator implements Comparable<Generator> {
 	private final String permission;
 	private final Boolean isDefault;
 	
-	public Generator(Map<Material, Double> blocks, String permission, boolean isDefault) {
+	public Generator(Map<Material, Double> blocks, String permission, Boolean isDefault) {
 		if (blocks.isEmpty()) throw new IllegalStateException();
 		
 		materials.addAll(blocks.keySet());
@@ -97,11 +98,12 @@ public class Generator implements Comparable<Generator> {
 	
 	@Override
 	public int compareTo(Generator other) {
-		if (permission != null) {
-			int first = permission.compareTo(other.permission());
-			return first != 0 ? first : Boolean.compare(isDefault, other.isDefault());
-		}
-		return Boolean.compare(isDefault, other.isDefault());
+		int result = Comparator.comparing(Generator::permission, Comparator.nullsLast(Comparator.naturalOrder()))
+			.compare(this, other);
+		if (result != 0) return result;
+		
+		return Comparator.comparing(Generator::isDefault, Comparator.nullsLast(Comparator.naturalOrder()))
+			.compare(this, other);
 	}
 	
 	public static Generator get(UUID id) {

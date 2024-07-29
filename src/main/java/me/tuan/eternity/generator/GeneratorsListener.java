@@ -41,7 +41,8 @@ public class GeneratorsListener implements Listener {
 	
 	private boolean canUse(Generator generator, Player player) {
 		return (generator.permission() != null && 
-			player.hasPermission(generator.permission()) || generator.isDefault());
+			player.hasPermission(generator.permission()) || 
+			(generator.isDefault() != null && generator.isDefault()));
 	}
 	
 	@EventHandler
