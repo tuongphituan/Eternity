@@ -7,9 +7,9 @@ import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import java.util.Map;
 import java.util.WeakHashMap;
-import org.bukkit.entity.Player;
 
 public class GeneratorsListener implements Listener {
 	private final Map<Block, Generator> generators = new WeakHashMap<>();

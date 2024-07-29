@@ -128,6 +128,10 @@ public class Generator {
 		}
 	}
 	
+	public static int amount() {
+		return holder.size();
+	}
+	
 	public static Stream<Generator> stream() {
 		return holder.stream();
 	}
