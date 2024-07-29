@@ -32,6 +32,7 @@ public class GeneratorsListener implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		Generator generator = Generator.stream()
+			.sorted()
 			.filter(g -> canUse(g, player))
 			.findFirst()
 			.orElseThrow(IllegalStateException::new);
@@ -39,8 +40,8 @@ public class GeneratorsListener implements Listener {
 	}
 	
 	private boolean canUse(Generator generator, Player player) {
-		return generator.isDefault() || (generator.permission() != null && 
-			player.hasPermission(generator.permission()));
+		return (generator.permission() != null && 
+			player.hasPermission(generator.permission()) || generator.isDefault());
 	}
 	
 	@EventHandler

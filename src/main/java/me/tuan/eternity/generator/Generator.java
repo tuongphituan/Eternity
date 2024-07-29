@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.Stream;
 
-public class Generator {
+public class Generator implements Comparable<Generator> {
 	private static final List<Generator> holder = new ArrayList<>();
 	private static final Map<UUID, Generator> generators = new HashMap<>();
 	private static final SplittableRandom random = new SplittableRandom();
@@ -22,7 +22,7 @@ public class Generator {
 	private final List<Integer> alias = new ArrayList<>();
 	
 	private final String permission;
-	private final boolean isDefault;
+	private final Boolean isDefault;
 	
 	public Generator(Map<Material, Double> blocks, String permission, boolean isDefault) {
 		if (blocks.isEmpty()) throw new IllegalStateException();
@@ -83,7 +83,7 @@ public class Generator {
 		return permission;
 	}
 	
-	public boolean isDefault() {
+	public Boolean isDefault() {
 		return isDefault;
 	}
 	
@@ -93,6 +93,15 @@ public class Generator {
 	
 	public boolean isGeneratorBlock(Material type) {
 		return type == Material.COBBLESTONE || type == Material.BASALT;
+	}
+	
+	@Override
+	public int compareTo(Generator other) {
+		if (permission != null) {
+			int first = permission.compareTo(other.permission());
+			return first != 0 ? first : Boolean.compare(isDefault, other.isDefault());
+		}
+		return Boolean.compare(isDefault, other.isDefault());
 	}
 	
 	public static Generator get(UUID id) {
@@ -122,14 +131,10 @@ public class Generator {
 			}
 			
 			String permission = (String) map.get("permission");
-			boolean isDefault = (Boolean) map.getOrDefault("default", false);
+			Boolean isDefault = (Boolean) map.get("default");
 			
 			holder.add(new Generator(newBlocks, permission, isDefault));
 		}
-	}
-	
-	public static int amount() {
-		return holder.size();
 	}
 	
 	public static Stream<Generator> stream() {
