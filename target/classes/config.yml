@@ -1,3 +1,4 @@
+generators:
 - blocks:
     COBBLESTONE: 90
     COAL_ORE: 10

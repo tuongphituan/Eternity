@@ -3,18 +3,18 @@ package me.tuan.eternity;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Bukkit;
 import me.tuan.eternity.generator.GeneratorsListener;
-import me.tuan.eternity.generator.GeneratorsConfig;
+import me.tuan.eternity.generator.Generator;
 
 public class Eternity extends JavaPlugin {
-	private final GeneratorsConfig generatorsConfig = new GeneratorsConfig(getDataFolder().getPath());
 	
 	@Override
 	public void onLoad() {
-		generatorsConfig.load();
+		saveDefaultConfig();
+		Generator.load(getConfig());
 	}
 	
 	@Override
 	public void onEnable() {
-		Bukkit.getPluginManager().registerEvents(new GeneratorsListener(generatorsConfig), this);
+		Bukkit.getPluginManager().registerEvents(new GeneratorsListener(), this);
 	}
 }

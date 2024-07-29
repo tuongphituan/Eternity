@@ -1,6 +1,7 @@
 package me.tuan.eternity.generator;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SplittableRandom;
@@ -9,8 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.stream.Stream;
 
 public class Generator {
+	private static final List<Generator> holder = new ArrayList<>();
 	private static final Map<UUID, Generator> generators = new HashMap<>();
 	private static final SplittableRandom random = new SplittableRandom();
 	
@@ -102,5 +105,30 @@ public class Generator {
 	
 	public static void remove(UUID id) {
 		generators.remove(id);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void load(Configuration config) {
+		List<Map<String, Object>> list = (List<Map<String, Object>>) config.getList("generators");
+		
+		for (Map<String, Object> map : list) {
+			Map<String, Object> blocks = (Map<String, Object>) map.get("blocks");
+			
+			Map<Material, Double> newBlocks = new HashMap<>();
+			for (Entry<String, Object> entry : blocks.entrySet()) {
+				Material material = Material.getMaterial(entry.getKey());
+				double chance = ((Number) entry.getValue()).doubleValue();
+				newBlocks.put(material, chance);
+			}
+			
+			String permission = (String) map.get("permission");
+			boolean isDefault = (Boolean) map.getOrDefault("default", false);
+			
+			holder.add(new Generator(newBlocks, permission, isDefault));
+		}
+	}
+	
+	public static Stream<Generator> stream() {
+		return holder.stream();
 	}
 }

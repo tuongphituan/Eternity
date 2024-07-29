@@ -9,15 +9,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.block.Block;
 import java.util.Map;
 import java.util.WeakHashMap;
+import org.bukkit.entity.Player;
 
 public class GeneratorsListener implements Listener {
 	private final Map<Block, Generator> generators = new WeakHashMap<>();
-	
-	private final GeneratorsConfig config;
-	
-	public GeneratorsListener(GeneratorsConfig config) {
-		this.config = config;
-	}
 	
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
@@ -35,12 +30,17 @@ public class GeneratorsListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		Generator generator = config.get().stream()
-			.filter(g -> g.isDefault() || (g.permission() != null &&
-				event.getPlayer().hasPermission(g.permission())))
+		Player player = event.getPlayer();
+		Generator generator = Generator.stream()
+			.filter(g -> canUse(g, player))
 			.findFirst()
 			.orElseThrow(IllegalStateException::new);
-		Generator.store(event.getPlayer().getUniqueId(), generator);
+		Generator.store(player.getUniqueId(), generator);
+	}
+	
+	private boolean canUse(Generator generator, Player player) {
+		return generator.isDefault() || (generator.permission() != null && 
+			player.hasPermission(generator.permission()));
 	}
 	
 	@EventHandler
