@@ -41,8 +41,8 @@ public class GeneratorsListener implements Listener {
 		Block to = event.getToBlock();
 		
 		Generator generator = generators.remove(to);
-		if (generator != null) to.setType(generator.generate());
-		else to.setType(Material.COBBLESTONE);
+		if (generator != null) to.setType(generator.generate(), false);
+		else to.setType(Material.COBBLESTONE, false);
 	}
 	
 	@EventHandler

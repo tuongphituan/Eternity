@@ -4,13 +4,11 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
-import com.bgsoftware.superiorskyblock.api.handlers.ModulesManager;
 
 public class IslandLevelHandle {
 	
 	public static void load() {
-		ModulesManager manager = SuperiorSkyblockAPI.getModules();
-		manager.unregisterModule(manager.getModule("generators"));
+		SuperiorSkyblockAPI.getModules().getModule("generators").disableModule();
 	}
 		
 	public static void onBlockBreak(Block block) {
