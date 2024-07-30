@@ -19,8 +19,8 @@ public class GeneratorsListener implements Listener {
 		Generator generator = Generator.get(event.getPlayer().getUniqueId());
 		if (generator != null) {
 			Block block = event.getBlock();
-			if (!generator.hasBlock(event.getBlock().getType())) return;
-			generators.put(event.getBlock(), generator);
+			if (!generator.hasBlock(block.getType())) return;
+			generators.put(block, generator);
 			IslandLevelHandle.onBlockBreak(block);
 		}
 	}
