@@ -4,12 +4,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFormEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
+import org.bukkit.Material;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.Set;
 
 public class GeneratorsListener implements Listener {
 	private final Map<Block, Generator> generators = new WeakHashMap<>();
@@ -17,8 +17,33 @@ public class GeneratorsListener implements Listener {
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
 		Generator generator = Generator.get(event.getPlayer().getUniqueId());
-		if (generator != null && generator.hasBlock(event.getBlock().getType()))
+		if (generator != null) {
+			Block block = event.getBlock();
+			if (!generator.hasBlock(event.getBlock().getType())) return;
 			generators.put(event.getBlock(), generator);
+			IslandLevelHandle.onBlockBreak(block);
+		}
+	}
+	
+	private final Set<Material> fences = Set.of(Material.OAK_FENCE, 
+		Material.BIRCH_FENCE, Material.ACACIA_FENCE, Material.BAMBOO_FENCE, 
+		Material.CHERRY_FENCE, Material.JUNGLE_FENCE, Material.SPRUCE_FENCE, 
+		Material.WARPED_FENCE, Material.CRIMSON_FENCE, Material.MANGROVE_FENCE);
+	
+	@EventHandler
+	public void onBlockFromTo(BlockFromToEvent event) {
+		if (event.getBlock().getType() != Material.WATER) return;
+		Block rel = event.getToBlock().getRelative(event.getFace());
+		if (!fences.contains(rel.getType())) return;
+		
+		event.setCancelled(true);
+		
+		Block to = event.getToBlock();
+		
+		Generator generator = generators.get(to);
+		if (generator != null)
+			to.setType(generator.generate());
+		else to.setType(Material.COBBLESTONE);
 	}
 	
 	@EventHandler
@@ -26,27 +51,5 @@ public class GeneratorsListener implements Listener {
 		Generator generator = generators.remove(event.getBlock());
 		if (generator != null && generator.isGeneratorBlock(event.getNewState().getType()))
 			event.getNewState().setType(generator.generate());
-	}
-	
-	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event) {
-		Player player = event.getPlayer();
-		Generator generator = Generator.stream()
-			.sorted()
-			.filter(g -> canUse(g, player))
-			.findFirst()
-			.orElseThrow(IllegalStateException::new);
-		Generator.store(player.getUniqueId(), generator);
-	}
-	
-	private boolean canUse(Generator generator, Player player) {
-		return (generator.permission() != null && 
-			player.hasPermission(generator.permission()) || 
-			(generator.isDefault() != null && generator.isDefault()));
-	}
-	
-	@EventHandler
-	public void onPlayerQuit(PlayerQuitEvent event) {
-		Generator.remove(event.getPlayer().getUniqueId());
 	}
 }

@@ -1,0 +1,24 @@
+package me.tuan.eternity.generator;
+
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import com.bgsoftware.superiorskyblock.api.island.Island;
+import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
+import com.bgsoftware.superiorskyblock.api.handlers.ModulesManager;
+
+public class IslandLevelHandle {
+	
+	public static void load() {
+		ModulesManager manager = SuperiorSkyblockAPI.getModules();
+		manager.unregisterModule(manager.getModule("generators"));
+	}
+		
+	public static void onBlockBreak(Block block) {
+		Island island = getIsland(block.getLocation());
+		if (island != null) island.handleBlockBreak(block);
+	}
+	
+	private static Island getIsland(Location location) {
+		return SuperiorSkyblockAPI.getIslandAt(location);
+	}
+}
