@@ -25,7 +25,7 @@ public class GeneratorsListener implements Listener {
 		}
 	}
 	
-	private final Set<Material> fences = Set.of(Material.OAK_FENCE, 
+	private final Set<Material> dest = Set.of(Material.LAVA, Material.OAK_FENCE, 
 		Material.BIRCH_FENCE, Material.ACACIA_FENCE, Material.BAMBOO_FENCE, 
 		Material.CHERRY_FENCE, Material.JUNGLE_FENCE, Material.SPRUCE_FENCE, 
 		Material.WARPED_FENCE, Material.CRIMSON_FENCE, Material.MANGROVE_FENCE);
@@ -33,7 +33,7 @@ public class GeneratorsListener implements Listener {
 	@EventHandler
 	public void onBlockFromTo(BlockFromToEvent event) {
 		if (event.getBlock().getType() != Material.WATER) return;
-		if (!fences.contains(event.getToBlock().getRelative(event.getFace()).getType())) return;
+		if (!dest.contains(event.getToBlock().getRelative(event.getFace()).getType())) return;
 		
 		event.setCancelled(true);
 		
@@ -46,8 +46,6 @@ public class GeneratorsListener implements Listener {
 	
 	@EventHandler
 	public void onBlockForm(BlockFormEvent event) {
-		Generator generator = generators.remove(event.getBlock());
-		if (generator != null && Generator.isGeneratorBlock(event.getNewState().getType()))
-			event.getNewState().setType(generator.generate());
+		if (event.getNewState().getType() == Material.COBBLESTONE) event.setCancelled(true);
 	}
 }

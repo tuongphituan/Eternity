@@ -1,6 +1,6 @@
 name: Eternity
 main: me.tuan.eternity.Eternity
-version: 1.5-SNAPSHOT
+version: 1.5.1-SNAPSHOT
 api-version: '1.20'
 
 softdepend:
