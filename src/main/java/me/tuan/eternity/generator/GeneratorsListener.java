@@ -33,8 +33,7 @@ public class GeneratorsListener implements Listener {
 	@EventHandler
 	public void onBlockFromTo(BlockFromToEvent event) {
 		if (event.getBlock().getType() != Material.WATER) return;
-		Block rel = event.getToBlock().getRelative(event.getFace());
-		if (!fences.contains(rel.getType())) return;
+		if (!fences.contains(event.getToBlock().getRelative(event.getFace()).getType())) return;
 		
 		event.setCancelled(true);
 		
