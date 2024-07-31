@@ -3,3 +3,4 @@ me/tuan/eternity/generator/PlayersListener.class
 me/tuan/eternity/generator/GeneratorsListener.class
 me/tuan/eternity/generator/Generator.class
 me/tuan/eternity/Eternity.class
+me/tuan/eternity/generator/Generator$Holder.class

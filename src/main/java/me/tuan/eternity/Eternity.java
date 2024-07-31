@@ -11,7 +11,8 @@ public class Eternity extends JavaPlugin {
 	@Override
 	public void onLoad() {
 		saveDefaultConfig();
-		Generator.load(getConfig());
+
+		Generator.HOLDER.load(getConfig());
 	}
 	
 	@Override

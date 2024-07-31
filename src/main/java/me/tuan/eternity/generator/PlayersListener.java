@@ -11,12 +11,12 @@ public class PlayersListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		Generator generator = Generator.stream()
+		Generator generator = Generator.HOLDER.stream()
 			.sorted()
 			.filter(g -> canUse(g, player))
 			.findFirst()
 			.orElseThrow(IllegalStateException::new);
-		Generator.store(player.getUniqueId(), generator);
+		Generator.PLAYER.put(player.getUniqueId(), generator);
 	}
 	
 	private boolean canUse(Generator generator, Player player) {
@@ -27,6 +27,6 @@ public class PlayersListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		Generator.remove(event.getPlayer().getUniqueId());
+		Generator.PLAYER.remove(event.getPlayer().getUniqueId());
 	}
 }

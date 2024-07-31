@@ -12,10 +12,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.Stream;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class Generator implements Comparable<Generator> {
-	private static final List<Generator> holder = new ArrayList<>();
-	private static final Map<UUID, Generator> generators = new HashMap<>();
+	public static final Holder HOLDER = new Holder();
+	public static final Map<UUID, Generator> PLAYER = new HashMap<>();
+	
 	private static final SplittableRandom random = new SplittableRandom();
 	
 	private final List<Material> materials = new ArrayList<>();;
@@ -92,7 +94,7 @@ public class Generator implements Comparable<Generator> {
 		return materials.contains(type) || isGeneratorBlock(type);
 	}
 	
-	public boolean isGeneratorBlock(Material type) {
+	public static boolean isGeneratorBlock(Material type) {
 		return type == Material.COBBLESTONE || type == Material.BASALT;
 	}
 	
@@ -106,40 +108,25 @@ public class Generator implements Comparable<Generator> {
 			.compare(this, other);
 	}
 	
-	public static Generator get(UUID id) {
-		return generators.get(id);
-	}
-	
-	public static void store(UUID id, Generator generator) {
-		generators.put(id, generator);
-	}
-	
-	public static void remove(UUID id) {
-		generators.remove(id);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static void load(Configuration config) {
-		List<Map<String, Object>> list = (List<Map<String, Object>>) config.getList("generators");
+	public static class Holder extends ArrayList<Generator> {
+		static final long serialVersionUID = 1374763L;
 		
-		for (Map<String, Object> map : list) {
-			Map<String, Object> blocks = (Map<String, Object>) map.get("blocks");
-			
-			Map<Material, Double> newBlocks = new HashMap<>();
-			for (Entry<String, Object> entry : blocks.entrySet()) {
-				Material material = Material.getMaterial(entry.getKey());
-				double chance = ((Number) entry.getValue()).doubleValue();
-				newBlocks.put(material, chance);
-			}
+		public void load(Configuration config) {
+			List<?> list = config.getList("generators");
+			list.stream().map(obj -> (Map<?, ?>) obj).forEach(this::load);
+		}
+		
+		private void load(Map<?, ?> map) {
+			Map<Material, Double> blocks = ((Map<?, ?>) map.get("blocks")).entrySet()
+				.stream()
+				.collect(Collectors.toMap(
+					e -> Material.getMaterial(e.getKey().toString()),
+					e -> ((Number) e.getValue()).doubleValue()));
 			
 			String permission = (String) map.get("permission");
 			Boolean isDefault = (Boolean) map.get("default");
 			
-			holder.add(new Generator(newBlocks, permission, isDefault));
+			add(new Generator(blocks, permission, isDefault));
 		}
-	}
-	
-	public static Stream<Generator> stream() {
-		return holder.stream();
 	}
 }

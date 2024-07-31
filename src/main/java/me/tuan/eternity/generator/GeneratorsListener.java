@@ -16,7 +16,7 @@ public class GeneratorsListener implements Listener {
 	
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
-		Generator generator = Generator.get(event.getPlayer().getUniqueId());
+		Generator generator = Generator.PLAYER.get(event.getPlayer().getUniqueId());
 		if (generator != null) {
 			Block block = event.getBlock();
 			if (!generator.hasBlock(block.getType())) return;
@@ -47,7 +47,7 @@ public class GeneratorsListener implements Listener {
 	@EventHandler
 	public void onBlockForm(BlockFormEvent event) {
 		Generator generator = generators.remove(event.getBlock());
-		if (generator != null && generator.isGeneratorBlock(event.getNewState().getType()))
+		if (generator != null && Generator.isGeneratorBlock(event.getNewState().getType()))
 			event.getNewState().setType(generator.generate());
 	}
 }
