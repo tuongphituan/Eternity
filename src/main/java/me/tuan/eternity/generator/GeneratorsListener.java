@@ -48,7 +48,7 @@ public class GeneratorsListener implements Listener {
 	public void onBlockForm(BlockFormEvent event) {
 		if (!Generator.isGeneratorBlock(event.getNewState().getType())) return;
 		
-		Generator generator = generators.get(event.getBlock());
+		Generator generator = generators.remove(event.getBlock());
 		if (generator != null) event.getNewState().setType(generator.generate());
 	}
 }
