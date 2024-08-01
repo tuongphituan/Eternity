@@ -32,8 +32,8 @@ public class GeneratorsListener implements Listener {
 	
 	@EventHandler
 	public void onBlockFromTo(BlockFromToEvent event) {
-		if (event.getBlock().getType() != Material.WATER) return;
-		if (!dest.contains(event.getToBlock().getRelative(event.getFace()).getType())) return;
+		if (event.getBlock().getType() != Material.WATER ||
+		!dest.contains(event.getToBlock().getRelative(event.getFace()).getType())) return;
 		
 		event.setCancelled(true);
 		
@@ -46,6 +46,9 @@ public class GeneratorsListener implements Listener {
 	
 	@EventHandler
 	public void onBlockForm(BlockFormEvent event) {
-		if (event.getNewState().getType() == Material.COBBLESTONE) event.setCancelled(true);
+		if (!Generator.isGeneratorBlock(event.getNewState().getType())) return;
+		
+		Generator generator = generators.get(event.getBlock());
+		if (generator != null) event.getNewState().setType(generator.generate());
 	}
 }

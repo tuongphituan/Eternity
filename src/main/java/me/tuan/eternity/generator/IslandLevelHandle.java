@@ -12,11 +12,7 @@ public class IslandLevelHandle {
 	}
 		
 	public static void onBlockBreak(Block block) {
-		Island island = getIsland(block.getLocation());
+		Island island = SuperiorSkyblockAPI.getIslandAt(block.getLocation());
 		if (island != null) island.handleBlockBreak(block);
-	}
-	
-	private static Island getIsland(Location location) {
-		return SuperiorSkyblockAPI.getIslandAt(location);
 	}
 }
