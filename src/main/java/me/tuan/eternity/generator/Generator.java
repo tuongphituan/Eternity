@@ -4,18 +4,12 @@ import org.bukkit.Material;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SplittableRandom;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import me.tuan.eternity.generator.holder.GeneratorsHolder;
-import me.tuan.eternity.generator.holder.PlayersGeneratorHolder;
 
 public class Generator implements Comparable<Generator> {
-	public static final GeneratorsHolder CURRENT = new GeneratorsHolder();
-	public static final PlayersGeneratorHolder PLAYER = new PlayersGeneratorHolder();
-	
 	private static final SplittableRandom random = new SplittableRandom();
 	
 	private final List<Material> materials = new ArrayList<>();;
@@ -23,15 +17,15 @@ public class Generator implements Comparable<Generator> {
 	private final List<Integer> alias = new ArrayList<>();
 	
 	private final String permission;
-	private final Boolean isDefault;
+	private final boolean isDefault;
 	
 	public Generator(Map<Material, Double> blocks, String permission, Boolean isDefault) {
 		if (blocks.isEmpty()) throw new IllegalStateException();
 		
 		materials.addAll(blocks.keySet());
 		
-		this.permission = permission;
-		this.isDefault = isDefault;
+		this.permission = permission != null ? permission : "";
+		this.isDefault = isDefault != null ? isDefault : false;
 		
 		compute(blocks);
 	}
@@ -84,16 +78,12 @@ public class Generator implements Comparable<Generator> {
 		return permission;
 	}
 	
-	public Boolean isDefault() {
+	public boolean isDefault() {
 		return isDefault;
 	}
 	
 	public boolean hasBlock(Material type) {
-		return materials.contains(type) || isGeneratorBlock(type);
-	}
-	
-	public static boolean isGeneratorBlock(Material type) {
-		return type == Material.COBBLESTONE || type == Material.BASALT;
+		return materials.contains(type);
 	}
 	
 	@Override

@@ -1,8 +1,5 @@
+/storage/emulated/0/Android/media/com.sparseway.igneous/Projects/Eternity/src/main/java/me/tuan/eternity/listener/PlayersListener.java
+/storage/emulated/0/Android/media/com.sparseway.igneous/Projects/Eternity/src/main/java/me/tuan/eternity/generator/Generators.java
 /storage/emulated/0/Android/media/com.sparseway.igneous/Projects/Eternity/src/main/java/me/tuan/eternity/Eternity.java
-/storage/emulated/0/Android/media/com.sparseway.igneous/Projects/Eternity/src/main/java/me/tuan/eternity/generator/holder/PlayersGeneratorHolder.java
 /storage/emulated/0/Android/media/com.sparseway.igneous/Projects/Eternity/src/main/java/me/tuan/eternity/generator/Generator.java
-/storage/emulated/0/Android/media/com.sparseway.igneous/Projects/Eternity/src/main/java/me/tuan/eternity/generator/IslandLevelHandle.java
-/storage/emulated/0/Android/media/com.sparseway.igneous/Projects/Eternity/src/main/java/me/tuan/eternity/generator/PlayersListener.java
-/storage/emulated/0/Android/media/com.sparseway.igneous/Projects/Eternity/src/main/java/me/tuan/eternity/generator/GeneratorsListener.java
-/storage/emulated/0/Android/media/com.sparseway.igneous/Projects/Eternity/src/main/java/me/tuan/eternity/command/Commands.java
-/storage/emulated/0/Android/media/com.sparseway.igneous/Projects/Eternity/src/main/java/me/tuan/eternity/generator/holder/GeneratorsHolder.java
+/storage/emulated/0/Android/media/com.sparseway.igneous/Projects/Eternity/src/main/java/me/tuan/eternity/listener/GeneratorsListener.java
