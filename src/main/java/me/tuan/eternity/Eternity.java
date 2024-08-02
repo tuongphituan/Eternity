@@ -12,7 +12,7 @@ public class Eternity extends JavaPlugin {
 	public void onLoad() {
 		saveDefaultConfig();
 
-		Generator.HOLDER.load(getConfig());
+		Generator.CURRENT.load(getConfig());
 	}
 	
 	@Override

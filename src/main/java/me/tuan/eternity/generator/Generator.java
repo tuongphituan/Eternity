@@ -1,22 +1,20 @@
 package me.tuan.eternity.generator;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SplittableRandom;
-import java.util.UUID;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.stream.Stream;
 import java.util.Comparator;
-import java.util.stream.Collectors;
+import me.tuan.eternity.generator.holder.GeneratorsHolder;
+import me.tuan.eternity.generator.holder.PlayersGeneratorHolder;
 
 public class Generator implements Comparable<Generator> {
-	public static final Holder HOLDER = new Holder();
-	public static final Map<UUID, Generator> PLAYER = new HashMap<>();
+	public static final GeneratorsHolder CURRENT = new GeneratorsHolder();
+	public static final PlayersGeneratorHolder PLAYER = new PlayersGeneratorHolder();
 	
 	private static final SplittableRandom random = new SplittableRandom();
 	
@@ -106,27 +104,5 @@ public class Generator implements Comparable<Generator> {
 		
 		return Comparator.comparing(Generator::isDefault, Comparator.nullsLast(Comparator.naturalOrder()))
 			.compare(this, other);
-	}
-	
-	public static class Holder extends ArrayList<Generator> {
-		static final long serialVersionUID = 1374763L;
-		
-		public void load(Configuration config) {
-			List<?> list = config.getList("generators");
-			list.stream().map(obj -> (Map<?, ?>) obj).forEach(this::load);
-		}
-		
-		private void load(Map<?, ?> map) {
-			Map<Material, Double> blocks = ((Map<?, ?>) map.get("blocks")).entrySet()
-				.stream()
-				.collect(Collectors.toMap(
-					e -> Material.getMaterial(e.getKey().toString()),
-					e -> ((Number) e.getValue()).doubleValue()));
-			
-			String permission = (String) map.get("permission");
-			Boolean isDefault = (Boolean) map.get("default");
-			
-			add(new Generator(blocks, permission, isDefault));
-		}
 	}
 }
