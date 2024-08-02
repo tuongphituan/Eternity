@@ -16,7 +16,7 @@ public class PlayersListener implements Listener {
 		
 		Generator generator = Generators.CURRENT.stream()
 			.sorted()
-			.filter(g -> player.hasPermission(g.permission()) || g.isDefault())
+			.filter(g -> (g.permission() != null && player.hasPermission(g.permission())) || g.isDefault())
 			.findFirst()
 			.orElseThrow(IllegalStateException::new);
 		

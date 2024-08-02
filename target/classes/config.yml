@@ -1,0 +1,22 @@
+generators:
+- blocks:
+    COBBLESTONE: 90
+    COAL_ORE: 10
+  default: true
+- blocks:
+    COBBLESTONE: 80
+    COAL_ORE: 15
+    IRON_ORE: 5
+  permission: eternity.generator.2
+- blocks:
+    COBBLESTONE: 70
+    COAL_ORE: 20
+    IRON_ORE: 10
+  permission: eternity.generator.3
+- blocks:
+    COBBLESTONE: 60
+    COAL_ORE: 20
+    IRON_ORE: 15
+    DIAMOND_ORE: 4
+    EMERALD_ORE: 1
+  permission: eternity.generator.4

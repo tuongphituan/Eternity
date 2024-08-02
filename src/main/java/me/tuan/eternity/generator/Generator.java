@@ -24,7 +24,7 @@ public class Generator implements Comparable<Generator> {
 		
 		materials.addAll(blocks.keySet());
 		
-		this.permission = permission != null ? permission : "";
+		this.permission = permission;
 		this.isDefault = isDefault != null ? isDefault : false;
 		
 		compute(blocks);
@@ -92,7 +92,6 @@ public class Generator implements Comparable<Generator> {
 			.compare(this, other);
 		if (result != 0) return result;
 		
-		return Comparator.comparing(Generator::isDefault, Comparator.nullsLast(Comparator.naturalOrder()))
-			.compare(this, other);
+		return Comparator.comparing(Generator::isDefault, Comparator.naturalOrder()).compare(this, other);
 	}
 }
